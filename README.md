@@ -9,6 +9,26 @@ Output from this utility can be pushed to prometheus push gateway.
 go run cmd/metrics/main.go -file ./test.json | curl --data-binary @- http://localhost:9091/metrics/job/some_job
 ```
 
+## output
+
+```
+# TYPE suite_duration gauge
+suite_duration{suite="login-page",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 8025
+
+# TYPE test_duration gauge
+test_duration{suite="login-page",name="should-log-in",state="passed",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 3838
+test_duration{suite="login-page",name="should-log-in-via-api",state="skipped",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 0
+test_duration{suite="login-page",name="shouldnt-log-in-wrong-credentials",state="passed",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 1903
+test_duration{suite="login-page",name="shouldnt-log-in-no-email",state="passed",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 1095
+test_duration{suite="login-page",name="shouldnt-log-in-no-password",state="passed",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 1188
+
+# TYPE hook_duration gauge
+hook_duration{suite="login-page",title="before-each-hook-for-login-page",state="passed",test="should-log-in",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 2484
+hook_duration{suite="login-page",title="before-each-hook-for-login-page",state="passed",test="shouldnt-log-in-wrong-credentials",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 692
+hook_duration{suite="login-page",title="before-each-hook-for-login-page",state="passed",test="shouldnt-log-in-no-email",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 540
+hook_duration{suite="login-page",title="before-each-hook-for-login-page",state="passed",test="shouldnt-log-in-no-password",hostname="test.something.cz",suite_start="2023-02-28T14:40:26.069Z"} 621
+```
+
 ## test.json
 
 ```json
