@@ -18,48 +18,50 @@ func ProcessResult(result test.TestResult) (string, error) {
 	}
 
 	// iterate through suites
-	resultMetrics := []string{}
+	suites := []string{}
+	tests := []string{}
+	hooks := []string{}
+
 	for _, s := range result.Suites {
-		resultMetrics = append(resultMetrics, processSuite(s, url.Hostname()))
-		resultMetrics = append(resultMetrics, processSuiteTests(s, url.Hostname()))
-		resultMetrics = append(resultMetrics, processSuiteHooks(s, url.Hostname()))
+		suites = append(suites, processSuite(s, url.Hostname()))
+		tests = append(tests, processSuiteTests(s, url.Hostname()))
+		hooks = append(hooks, processSuiteHooks(s, url.Hostname()))
 	}
 
-	return strings.Join(resultMetrics, "\n"), nil
+	// ad empty line at the end of each block
+	suites = append(suites, "")
+	tests = append(tests, "")
+	hooks = append(hooks, "")
+
+	// decorate metrics with types
+	suites = append([]string{"# TYPE suite_duration gauge"}, suites...)
+	tests = append([]string{"# TYPE test_duration gauge"}, tests...)
+	hooks = append([]string{"# TYPE hook_duration gauge"}, hooks...)
+
+	return strings.Join(suites, "\n") + strings.Join(tests, "\n") + strings.Join(hooks, "\n"), nil
 }
 
 // processSuite generates text metrics for the whole suite
 func processSuite(suite test.TestSuite, baseHostname string) string {
-	suiteDuration := []string{
-		"# TYPE suite_duration gauge",
-	}
+	suiteDuration := []string{}
 	suiteDuration = append(suiteDuration, prometheus.SuiteDurationFromSuite(suite, baseHostname))
-	suiteDuration = append(suiteDuration, "")
 	return strings.Join(suiteDuration, "\n")
 }
 
 // processSuiteTests generates text metrics for suite's tests
 func processSuiteTests(suite test.TestSuite, baseHostname string) string {
-	testDurations := []string{
-		"# TYPE test_duration gauge",
-	}
+	testDurations := []string{}
 	for _, t := range suite.Tests {
 		testDurations = append(testDurations, prometheus.TestDurationFromTest(t, suite.Name, baseHostname, suite.Start))
 	}
-	testDurations = append(testDurations, "")
-
 	return strings.Join(testDurations, "\n")
 }
 
 // processSuiteHooks generates text metrics for suite's hooks
 func processSuiteHooks(suite test.TestSuite, baseHostname string) string {
-	hookDurations := []string{
-		"# TYPE hook_duration gauge",
-	}
+	hookDurations := []string{}
 	for _, h := range suite.Hooks {
 		hookDurations = append(hookDurations, prometheus.HookDurationFromHook(h, suite.Name, baseHostname, suite.Start))
 	}
-	hookDurations = append(hookDurations, "")
-
 	return strings.Join(hookDurations, "\n")
 }
