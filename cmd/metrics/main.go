@@ -23,7 +23,7 @@ func main() {
 	}
 
 	// get metrics in prometheus format
-	metrics, err := process.ProcessResult(test)
+	metrics, err := process.ProcessResult(test, cfg.Format)
 	if err != nil {
 		log.Fatal("could not get the metrics")
 	}
