@@ -100,7 +100,7 @@ func processInfluxDb(result test.TestResult) (string, error) {
 		hooks = append(hooks, processSuiteHooksInfluxDb(s, url.Hostname(), timestamp))
 	}
 
-	return strings.Join(suites, "\n\n") + strings.Join(tests, "\n\n") + strings.Join(hooks, "\n"), nil
+	return strings.Join(suites, "\n") + "\n" + strings.Join(tests, "\n") + "\n" + strings.Join(hooks, "\n"), nil
 }
 
 func processSuiteInfluxDb(suite test.TestSuite, baseHostname string, timestamp int64) string {
