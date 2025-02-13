@@ -13,12 +13,12 @@ func TestDurationFromTest(test test.Test, suite string, baseHostname string, sui
 	suiteName := slug.MakeLang(suite, "en")
 
 	return fmt.Sprintf(
-		`test_duration,suite=%s,name=%s,state=%s,hostname=%s,suite_start=%s, value=%d %d`,
-		suiteName,
-		testName,
-		test.State,
-		baseHostname,
-		suiteStart,
+		`test_duration,suite=%s,name=%s,state=%s,hostname=%s,suite_start=%s value=%d %d`,
+		checkEmpty(suiteName),
+		checkEmpty(testName),
+		checkEmpty(test.State),
+		checkEmpty(baseHostname),
+		checkEmpty(suiteStart),
 		test.Duration,
 		timestamp,
 	)
