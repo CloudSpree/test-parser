@@ -7,3 +7,4 @@ linux_linux
 windows.exe
 # Added by goreleaser init:
 dist/
+.envrc
